@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.post('/', function(req, res, next) {
-  console.log(req.body)
+router.post('/integration', function(req, res, next) {
   const apiname = req.body.apiname;
   if(apiname) {
     res.status(200).send({message: "API called successfully", api: apiname });

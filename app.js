@@ -7,17 +7,31 @@ var integrationRouter = require('./routes/integration');
 var usersRouter = require('./routes/excel');
 
 var app = express();
+const cors = require('cors');
+
+var whitelist = ['http://localhost:3000'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/integration', integrationRouter);
+
+app.use('/api', integrationRouter);
 app.use('/users', usersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log(req.body)
   next(createError(404));
 });
 
@@ -29,7 +43,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send('error');
+  res.status(404).send('error');
 });
 
 module.exports = app;
